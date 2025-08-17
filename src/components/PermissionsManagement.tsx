@@ -10,10 +10,9 @@ import {
 } from '../data/mockData';
 
 interface PermissionsManagementProps {
-  onBack: () => void;
 }
 
-export default function PermissionsManagement({ onBack }: PermissionsManagementProps) {
+export default function PermissionsManagement({}: PermissionsManagementProps) {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -263,23 +262,13 @@ export default function PermissionsManagement({ onBack }: PermissionsManagementP
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4 space-x-reverse">
-              <button
-                onClick={onBack}
-                className="flex items-center space-x-2 space-x-reverse text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <ArrowRight className="w-5 h-5 ml-2" />
-                <span>العودة للإعدادات</span>
-              </button>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <div className="flex items-center space-x-3 space-x-reverse">
-                <div className="bg-blue-100 p-2 rounded-lg">
-                  <Shield className="w-6 h-6 text-blue-600" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">إدارة الصلاحيات</h1>
-                  <p className="text-sm text-gray-600">إدارة أدوار المستخدمين وصلاحياتهم في النظام</p>
-                </div>
+            <div className="flex items-center space-x-3 space-x-reverse">
+              <div className="bg-blue-100 p-2 rounded-lg">
+                <Shield className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">إدارة الصلاحيات</h1>
+                <p className="text-sm text-gray-600">إدارة أدوار المستخدمين وصلاحياتهم في النظام</p>
               </div>
             </div>
           </div>

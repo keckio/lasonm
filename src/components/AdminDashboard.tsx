@@ -224,17 +224,17 @@ export default function AdminDashboard({ onNavigateBack }: AdminDashboardProps) 
   const renderMainContent = () => {
     // Show permissions management component
     if (activeTab === 'permissions') {
-      return <PermissionsManagement onBack={() => setActiveTab('settings')} />;
+      return <PermissionsManagement />;
     }
 
     // Show beneficiaries management component
     if (['beneficiaries-list', 'status-management', 'delayed', 'activity-log'].includes(activeTab)) {
-      return <BeneficiariesManagement onBack={() => setActiveTab('overview')} initialTab={activeTab} />;
+      return <BeneficiariesManagement initialTab={activeTab} />;
     }
 
     // Show package management component
     if (['packages-list', 'bulk-send', 'individual-send', 'tracking', 'distribution-reports'].includes(activeTab)) {
-      return <PackageManagement onBack={() => setActiveTab('overview')} initialTab={activeTab} />;
+      return <PackageManagement initialTab={activeTab} />;
     }
 
     // Overview Tab
@@ -629,13 +629,6 @@ export default function AdminDashboard({ onNavigateBack }: AdminDashboardProps) 
       <div className="w-72 bg-white shadow-xl flex flex-col border-l border-gray-200">
         {/* Header */}
         <div className="p-6 border-b border-gray-200 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800">
-          <button
-            onClick={onNavigateBack}
-            className="flex items-center space-x-2 space-x-reverse text-white/90 hover:text-white mb-4 transition-all duration-200 hover:translate-x-1"
-          >
-            <ArrowRight className="w-5 h-5 ml-2" />
-            <span className="text-sm">العودة للرئيسية</span>
-          </button>
           <div className="flex items-center space-x-3 space-x-reverse">
             <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm border border-white/30">
               <Shield className="w-7 h-7 text-white" />

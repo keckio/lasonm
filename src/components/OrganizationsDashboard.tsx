@@ -142,13 +142,6 @@ export default function OrganizationsDashboard({ onNavigateBack }: Organizations
       <div className="w-72 bg-white shadow-xl flex flex-col border-l border-gray-200">
         {/* Header */}
         <div className="p-6 border-b border-gray-200 bg-gradient-to-l from-green-600 to-green-700">
-          <button
-            onClick={onNavigateBack}
-            className="flex items-center space-x-2 space-x-reverse text-white/80 hover:text-white mb-4 transition-colors"
-          >
-            <ArrowRight className="w-5 h-5 ml-2" />
-            <span className="text-sm">العودة للرئيسية</span>
-          </button>
           <div className="flex items-center space-x-3 space-x-reverse">
             <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
               <Building2 className="w-7 h-7 text-white" />
