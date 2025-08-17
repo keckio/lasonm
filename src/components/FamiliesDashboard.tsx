@@ -105,10 +105,44 @@ export default function FamiliesDashboard({ onNavigateBack }: FamiliesDashboardP
     }
   };
 
+  // Get current tab info for header
+  const getCurrentTabInfo = () => {
+    const item = sidebarItems.find(item => item.id === activeTab);
+    return item ? { 
+      name: item.name, 
+      icon: item.icon, 
+      description: `${item.name} - ${currentFamily.name}` 
+    } : { 
+      name: 'غير محدد', 
+      icon: FileText, 
+      description: 'قسم غير محدد' 
+    };
+  };
+
   const filteredMembers = familyMembers.filter(member => 
     member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     member.nationalId.includes(searchTerm)
   );
+
+  // Render content header for all tabs except overview
+  const renderContentHeader = () => {
+    if (activeTab === 'overview') return null;
+    
+    const tabInfo = getCurrentTabInfo();
+    return (
+      <div className="mb-8">
+        <div className="flex items-center space-x-3 space-x-reverse mb-4">
+          <div className="bg-purple-100 p-3 rounded-xl">
+            <tabInfo.icon className="w-8 h-8 text-purple-600" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">{tabInfo.name}</h1>
+            <p className="text-gray-600 mt-1">{tabInfo.description}</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex" dir="rtl">
@@ -177,6 +211,8 @@ export default function FamiliesDashboard({ onNavigateBack }: FamiliesDashboardP
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
         <div className="p-8">
+          {renderContentHeader()}
+          
           {/* Overview Tab */}
           {activeTab === 'overview' && (
             <div className="space-y-8">
@@ -428,20 +464,14 @@ export default function FamiliesDashboard({ onNavigateBack }: FamiliesDashboardP
           {/* Family Members Tab */}
           {activeTab === 'beneficiaries' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900">أفراد العائلة المستفيدين</h2>
-                  <p className="text-gray-600 mt-1">إدارة أفراد {currentFamily.name}</p>
-                </div>
-                <div className="flex space-x-3 space-x-reverse">
-                  <button 
-                    onClick={() => handleAddNew('member')}
-                    className="bg-purple-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-purple-700 transition-colors flex items-center shadow-lg"
-                  >
-                    <Plus className="w-4 h-4 ml-2" />
-                    إضافة فرد جديد
-                  </button>
-                </div>
+              <div className="flex items-center justify-end">
+                <button 
+                  onClick={() => handleAddNew('member')}
+                  className="bg-purple-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-purple-700 transition-colors flex items-center shadow-lg"
+                >
+                  <Plus className="w-4 h-4 ml-2" />
+                  إضافة فرد جديد
+                </button>
               </div>
 
               {/* Search */}
@@ -562,18 +592,10 @@ export default function FamiliesDashboard({ onNavigateBack }: FamiliesDashboardP
               <div className="text-center">
                 <div className="bg-gray-100 rounded-2xl p-12 mb-6">
                   <div className="text-gray-400 text-center">
-                    {activeTab === 'packages' && <Package className="w-20 h-20 mx-auto mb-4" />}
-                    {activeTab === 'tasks' && <Clock className="w-20 h-20 mx-auto mb-4" />}
-                    {activeTab === 'alerts' && <Bell className="w-20 h-20 mx-auto mb-4" />}
+                    {getCurrentTabInfo().icon && <getCurrentTabInfo().icon className="w-20 h-20 mx-auto mb-4" />}
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  قسم {
-                    activeTab === 'packages' ? 'الطرود' :
-                    activeTab === 'tasks' ? 'متابعة التوزيع' :
-                    activeTab === 'alerts' ? 'التنبيهات' : ''
-                  }
-                </h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">قسم {getCurrentTabInfo().name}</h3>
                 <p className="text-gray-600 mb-6">هذا القسم قيد التطوير - سيتم إضافة التفاصيل الكاملة قريباً</p>
                 <button className="bg-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-purple-700 transition-colors">
                   ابدأ التطوير

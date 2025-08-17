@@ -10,10 +10,11 @@ import {
 } from '../data/mockData';
 
 interface PermissionsManagementProps {
+  initialTab?: string;
 }
 
-export default function PermissionsManagement({}: PermissionsManagementProps) {
-  const [activeTab, setActiveTab] = useState('overview');
+export default function PermissionsManagement({ initialTab = 'overview' }: PermissionsManagementProps) {
+  const activeTab = initialTab;
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'add-role' | 'edit-role' | 'add-user' | 'assign-role'>('add-role');
@@ -34,13 +35,6 @@ export default function PermissionsManagement({}: PermissionsManagementProps) {
     userId: '',
     roleId: ''
   });
-
-  const tabs = [
-    { id: 'overview', name: 'نظرة عامة', icon: Shield },
-    { id: 'roles', name: 'الأدوار', icon: Crown },
-    { id: 'users', name: 'المستخدمين', icon: Users },
-    { id: 'permissions', name: 'الصلاحيات', icon: Lock },
-  ];
 
   const availablePermissions = [
     { id: "read_all", name: "قراءة جميع البيانات", category: "عام" },
@@ -257,55 +251,10 @@ export default function PermissionsManagement({}: PermissionsManagementProps) {
   const permissionsByCategory = getPermissionsByCategory();
 
   return (
-    <div className="min-h-screen bg-gray-50" dir="rtl">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-3 space-x-reverse">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <Shield className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">إدارة الصلاحيات</h1>
-                <p className="text-sm text-gray-600">إدارة أدوار المستخدمين وصلاحياتهم في النظام</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8 space-x-reverse">
-            {tabs.map((tab) => {
-              const IconComponent = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 space-x-reverse px-1 py-4 border-b-2 font-medium text-sm transition-colors ${
-                    isActive
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <IconComponent className="w-4 h-4 ml-2" />
-                  <span>{tab.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="space-y-8">
         {/* Overview Tab */}
         {activeTab === 'overview' && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
@@ -430,20 +379,14 @@ export default function PermissionsManagement({}: PermissionsManagementProps) {
         {/* Roles Tab */}
         {activeTab === 'roles' && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">إدارة الأدوار</h2>
-                <p className="text-gray-600 mt-1">إنشاء وتعديل أدوار المستخدمين</p>
-              </div>
-              <div className="flex space-x-3 space-x-reverse">
-                <button
-                  onClick={handleAddRole}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center"
-                >
-                  <Plus className="w-4 h-4 ml-2" />
-                  إضافة دور جديد
-                </button>
-              </div>
+            <div className="flex items-center justify-end">
+              <button
+                onClick={handleAddRole}
+                className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center"
+              >
+                <Plus className="w-4 h-4 ml-2" />
+                إضافة دور جديد
+              </button>
             </div>
 
             {/* Search */}
@@ -530,20 +473,14 @@ export default function PermissionsManagement({}: PermissionsManagementProps) {
         {/* Users Tab */}
         {activeTab === 'users' && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">إدارة المستخدمين</h2>
-                <p className="text-gray-600 mt-1">إدارة مستخدمي النظام وأدوارهم</p>
-              </div>
-              <div className="flex space-x-3 space-x-reverse">
-                <button
-                  onClick={handleAddUser}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center"
-                >
-                  <UserPlus className="w-4 h-4 ml-2" />
-                  إضافة مستخدم
-                </button>
-              </div>
+            <div className="flex items-center justify-end">
+              <button
+                onClick={handleAddUser}
+                className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center"
+              >
+                <UserPlus className="w-4 h-4 ml-2" />
+                إضافة مستخدم
+              </button>
             </div>
 
             {/* Search */}
@@ -664,13 +601,6 @@ export default function PermissionsManagement({}: PermissionsManagementProps) {
         {/* Permissions Tab */}
         {activeTab === 'permissions' && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">إدارة الصلاحيات</h2>
-                <p className="text-gray-600 mt-1">عرض وإدارة صلاحيات النظام</p>
-              </div>
-            </div>
-
             {/* Permissions by Category */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {['عام', 'المستخدمين', 'المستفيدين', 'الطلبات', 'التوزيع', 'التقارير'].map((category) => {
@@ -713,7 +643,6 @@ export default function PermissionsManagement({}: PermissionsManagementProps) {
             </div>
           </div>
         )}
-      </div>
 
       {/* Modal */}
       {showModal && (

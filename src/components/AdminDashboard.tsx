@@ -116,21 +116,16 @@ export default function AdminDashboard({ onNavigateBack }: AdminDashboardProps) 
       name: 'الإعدادات',
       icon: Settings,
       children: [
-        { id: 'permissions', name: 'إدارة الصلاحيات', icon: Shield },
+        { id: 'permissions-overview', name: 'نظرة عامة', icon: Shield },
+        { id: 'permissions-roles', name: 'الأدوار', icon: Crown },
+        { id: 'permissions-users', name: 'المستخدمين', icon: Users },
+        { id: 'permissions-permissions', name: 'الصلاحيات', icon: Lock },
         { id: 'messages', name: 'إعدادات الرسائل', icon: MessageSquare },
         { id: 'system', name: 'إعدادات النظام', icon: Settings },
         { id: 'backup', name: 'النسخ الاحتياطي', icon: Database },
         { id: 'audit', name: 'سجل المراجعة', icon: Activity }
       ]
     }
-  ];
-
-  const settingsItems = [
-    { id: 'permissions', name: 'إدارة الصلاحيات', icon: Shield, description: 'إدارة أدوار المستخدمين وصلاحياتهم' },
-    { id: 'messages', name: 'إعدادات الرسائل', icon: MessageSquare, description: 'إدارة قوالب الرسائل والتنبيهات' },
-    { id: 'system', name: 'إعدادات النظام', icon: Settings, description: 'الإعدادات العامة للنظام' },
-    { id: 'backup', name: 'النسخ الاحتياطي', icon: Database, description: 'إدارة النسخ الاحتياطية للبيانات' },
-    { id: 'audit', name: 'سجل المراجعة', icon: Activity, description: 'سجل جميع العمليات في النظام' },
   ];
 
   React.useEffect(() => {
@@ -221,10 +216,35 @@ export default function AdminDashboard({ onNavigateBack }: AdminDashboardProps) 
     alert('تم تصدير تقرير النظام بنجاح');
   };
 
+  // Get current tab info for header
+  const getCurrentTabInfo = () => {
+    for (const item of navItems) {
+      if (item.id === activeTab) {
+        return { name: item.name, icon: item.icon, description: 'إدارة وعرض البيانات' };
+      }
+      if (item.children) {
+        for (const child of item.children) {
+          if (child.id === activeTab) {
+            return { 
+              name: child.name, 
+              icon: child.icon, 
+              description: `${child.name} - ${item.name}`,
+              parentName: item.name
+            };
+          }
+        }
+      }
+    }
+    return { name: 'غير محدد', icon: FileText, description: 'قسم غير محدد' };
+  };
+
   const renderMainContent = () => {
-    // Show permissions management component
-    if (activeTab === 'permissions') {
-      return <PermissionsManagement />;
+    const tabInfo = getCurrentTabInfo();
+
+    // Show permissions management component with different tabs
+    if (activeTab.startsWith('permissions-')) {
+      const permissionsTab = activeTab.replace('permissions-', '');
+      return <PermissionsManagement initialTab={permissionsTab} />;
     }
 
     // Show beneficiaries management component
@@ -236,6 +256,21 @@ export default function AdminDashboard({ onNavigateBack }: AdminDashboardProps) 
     if (['packages-list', 'bulk-send', 'individual-send', 'tracking', 'distribution-reports'].includes(activeTab)) {
       return <PackageManagement initialTab={activeTab} />;
     }
+
+    // Render content header for all tabs
+    const renderContentHeader = () => (
+      <div className="mb-8">
+        <div className="flex items-center space-x-3 space-x-reverse mb-4">
+          <div className="bg-blue-100 p-3 rounded-xl">
+            <tabInfo.icon className="w-8 h-8 text-blue-600" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">{tabInfo.name}</h1>
+            <p className="text-gray-600 mt-1">{tabInfo.description}</p>
+          </div>
+        </div>
+      </div>
+    );
 
     // Overview Tab
     if (activeTab === 'overview') {
@@ -546,78 +581,23 @@ export default function AdminDashboard({ onNavigateBack }: AdminDashboardProps) 
       );
     }
 
-    // Settings Tab
-    if (activeTab === 'settings') {
-      return (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900">إعدادات النظام</h2>
-              <p className="text-gray-600 mt-1">إدارة إعدادات النظام والصلاحيات</p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {settingsItems.map((item) => {
-              const IconComponent = item.icon;
-              return (
-                <div 
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 cursor-pointer group transform hover:-translate-y-2"
-                >
-                  <div className="flex items-center space-x-4 space-x-reverse mb-6">
-                    <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-4 rounded-2xl group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-300">
-                      <IconComponent className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-700 transition-colors">{item.name}</h3>
-                  </div>
-                  <p className="text-gray-600 mb-6 text-sm leading-relaxed">{item.description}</p>
-                  <div className="flex items-center text-blue-600 text-sm font-medium group-hover:text-blue-700 transition-all duration-200">
-                    <span>فتح الإعدادات</span>
-                    <ArrowRight className="w-4 h-4 mr-2 rtl-flip group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      );
-    }
-
     // Other tabs placeholder
-    const getTabInfo = (tabId: string) => {
-      for (const item of navItems) {
-        if (item.id === tabId) {
-          return { name: item.name, icon: item.icon };
-        }
-        if (item.children) {
-          for (const child of item.children) {
-            if (child.id === tabId) {
-              return { name: child.name, icon: child.icon };
-            }
-          }
-        }
-      }
-      return { name: 'غير محدد', icon: FileText };
-    };
-
-    const tabInfo = getTabInfo(activeTab);
-    const IconComponent = tabInfo.icon;
-
     return (
-      <div className="bg-white rounded-2xl shadow-lg p-12 border border-gray-100">
-        <div className="text-center">
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-16 mb-8">
-            <div className="text-gray-400 text-center">
-              <IconComponent className="w-20 h-20 mx-auto mb-4" />
+      <div className="space-y-8">
+        {renderContentHeader()}
+        <div className="bg-white rounded-2xl shadow-lg p-12 border border-gray-100">
+          <div className="text-center">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-16 mb-8">
+              <div className="text-gray-400 text-center">
+                <tabInfo.icon className="w-20 h-20 mx-auto mb-4" />
+              </div>
             </div>
+            <h3 className="text-3xl font-bold text-gray-900 mb-6">قسم {tabInfo.name}</h3>
+            <p className="text-gray-600 mb-8 text-lg">هذا القسم قيد التطوير - سيتم إضافة التفاصيل الكاملة قريباً</p>
+            <button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 transform hover:scale-105 shadow-lg">
+              ابدأ التطوير
+            </button>
           </div>
-          <h3 className="text-3xl font-bold text-gray-900 mb-6">قسم {tabInfo.name}</h3>
-          <p className="text-gray-600 mb-8 text-lg">هذا القسم قيد التطوير - سيتم إضافة التفاصيل الكاملة قريباً</p>
-          <button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 transform hover:scale-105 shadow-lg">
-            ابدأ التطوير
-          </button>
         </div>
       </div>
     );
